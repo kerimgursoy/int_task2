@@ -1,45 +1,34 @@
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import javax.swing.*;
 
-public class RandGame extends Thread{
+public class RandGame{
     int num;
+    GameFrame frame;
     RandGame gameP;
-    @Override
-    public void run() {
-        num = (int) (Math.random()*101);
-        TTimer timer = new TTimer(gameP);
-        timer.start();
-        int n;
+    TTimer timer;
 
-        do {
-            System.out.println("Sayı gir: ");
-            Scanner scan = new Scanner(System.in);
-            try{
-                n = scan.nextInt();
-            }
-            catch (InputMismatchException f){
-                System.out.println("Geçersiz değer girildi, değer -1 kabul edildi.");
-                n = -1;
-                scan.next();
-            }
-        } while (!guess(n));
-        timer.stat = 1;
+    public RandGame(GameFrame frame){
+        num = (int) (Math.random()*101);
+        this.frame = frame;
+        this.gameP = this;
+        timer = new TTimer(gameP);
+        timer.start();
     }
 
-    public boolean guess(int n){
+    public void guess(int n) {
         if(n < num){
-            System.out.println("Çok küçük");
-            return false;
+            frame.msg.setText("Çok küçük");
         }
         else if(n > num){
-            System.out.println("Çok büyük");
-            return false;
+            frame.msg.setText("Çok büyük");
         }
         else {
-            System.out.println("Doğru bildiniz");
-            return true;
+            frame.msg.setText("Doğru bildiniz");
+            timer.interrupt();
+            Timer jtimer = new Timer(1000, e -> {
+                System.exit(0);
+            });
+            jtimer.setRepeats(false);
+            jtimer.start();
         }
     }
-
-
 }
